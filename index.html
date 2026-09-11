@@ -166,9 +166,10 @@ thead {
     position: sticky;
 
     /*
-       Usa a altura real do cabeçalho principal.
+       O cabeçalho fica no topo da área
+       de rolagem da tabela.
     */
-    top: var(--altura-topo, 0px);
+    top: 0;
 
     z-index: 900;
 }
@@ -387,7 +388,7 @@ tbody tr:hover td {
     }
 
     thead {
-        top: var(--altura-topo, 64px);
+        top: 0;
     }
 
     thead th,
@@ -674,26 +675,6 @@ let transferenciaAtual = null;
 
 
 /* =====================================================
-   AJUSTAR ALTURA DO CABEÇALHO
-===================================================== */
-
-function ajustarCabecalhoTabela() {
-
-    const topo =
-        document.getElementById("topo");
-
-    const alturaTopo =
-        topo.offsetHeight;
-
-    document.documentElement.style.setProperty(
-        "--altura-topo",
-        alturaTopo + "px"
-    );
-
-}
-
-
-/* =====================================================
    ABRIR TRANSFERÊNCIAS
 ===================================================== */
 
@@ -712,6 +693,7 @@ async function carregarPlanilha() {
 
     const tabela =
         document.getElementById("tabela");
+
 
     tabela.innerHTML = `
 
@@ -1552,20 +1534,8 @@ document.getElementById(
 
 
 /* =====================================================
-   AJUSTAR CABEÇALHO AO REDIMENSIONAR
-===================================================== */
-
-window.addEventListener(
-    "resize",
-    ajustarCabecalhoTabela
-);
-
-
-/* =====================================================
    INICIALIZAÇÃO
 ===================================================== */
-
-ajustarCabecalhoTabela();
 
 carregarPlanilha();
 
