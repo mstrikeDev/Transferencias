@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Transferências Pendentes</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f5f9;
+    color: #222;
+}
+
+.topo {
+    background: #3B62D1;
+    color: white;
+    padding: 22px 30px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.15);
+}
+
+.topo h1 {
+    font-size: 25px;
+    margin-bottom: 5px;
+}
+
+.topo p {
+    opacity: .9;
+    font-size: 14px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 25px auto;
+    padding: 0 20px;
+}
+
+.acoes {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-voltar,
+.btn-atualizar {
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-voltar {
+    background: #222;
+    color: white;
+}
+
+.btn-atualizar {
+    background: #3B62D1;
+    color: white;
+}
+
+.loja-box {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+.loja-cabecalho {
+    background: #3B62D1;
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.loja-cabecalho h2 {
+    font-size: 18px;
+}
+
+.btn-zerar {
+    border: none;
+    background: #d93025;
+    color: white;
+    padding: 9px 15px;
+    border-radius: 7px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-zerar:hover {
+    background: #b52219;
+}
+
+.lista {
+    padding: 12px;
+}
+
+.transferencia {
+    display: grid;
+    grid-template-columns: 1.5fr .7fr 1fr 1fr 55px;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    transition: .2s;
+}
+
+.transferencia:last-child {
+    border-bottom: none;
+}
+
+.transferencia.marcada {
+    background: #dff5e4;
+}
+
+.info-campo {
+    min-width: 0;
+}
+
+.info-campo small {
+    display: block;
+    color: #777;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.info-campo strong {
+    font-size: 14px;
+}
+
+.quantidade {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.check {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid #bbb;
+    background: white;
+    cursor: pointer;
+    font-size: 19px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.transferencia.marcada .check {
+    background: #22a447;
+    border-color: #22a447;
+    color: white;
+}
+
+.vazio {
+    background: white;
+    padding: 35px;
+    border-radius: 12px;
+    text-align: center;
+    color: #777;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+@media(max-width: 750px) {
+
+    .acoes {
+        flex-direction: column;
+    }
+
+    .btn-voltar,
+    .btn-atualizar {
+        width: 100%;
+    }
+
+    .loja-cabecalho {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .btn-zerar {
+        width: 100%;
+    }
+
+    .transferencia {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .info-campo:first-child {
+        grid-column: 1 / 3;
+    }
+
+    .check {
+        justify-self: end;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="topo">
+
+    <h1>Transferências Pendentes</h1>
+
+    <p>Controle de recebimento das transferências</p>
+
+</div>
+
+
+<div class="container">
+
+
+    <div class="acoes">
+
+        <button
+            class="btn-voltar"
+            onclick="voltar()">
+
+            ← Voltar
+
+        </button>
+
+
+        <button
+            class="btn-atualizar"
+            onclick="carregarTransferencias()">
+
+            ↻ Atualizar
+
+        </button>
+
+    </div>
+
+
+    <div id="conteudo">
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   CONFIGURAÇÃO
+===================================================== */
+
+const URL_API =
+"https://script.google.com/macros/s/AKfycbzK8uLz70TXboVLPVQlNSeNZFnZ2xNrTrr6BIKcEswPe-QoUxv8VGv1ElXJaX_E3cM/exec";
+
+
+/* =====================================================
+   VARIÁVEIS
+===================================================== */
+
+let transferencias = [];
+
+let marcadas = new Set();
+
+
+/* =====================================================
+   VOLTAR
+===================================================== */
+
+function voltar() {
+
+    window.location.href =
+        "index.html";
+
+}
+
+
+/* =====================================================
+   CARREGAR TRANSFERÊNCIAS
+===================================================== */
+
+async function carregarTransferencias() {
+
+    const conteudo =
+        document.getElementById(
+            "conteudo"
+        );
+
+
+    conteudo.innerHTML =
+        `<div class="vazio">
+            Carregando transferências...
+        </div>`;
+
+
+    try {
+
+        const resposta =
+            await fetch(
+                URL_API +
+                "?t=" +
+                Date.now()
+            );
+
+
+        if (!resposta.ok) {
+
+            throw new Error(
+                "Erro HTTP " +
+                resposta.status
+            );
+
+        }
+
+
+        const resultado =
+            await resposta.json();
+
+
+        if (!resultado.ok) {
+
+            throw new Error(
+                resultado.erro ||
+                "Erro ao carregar transferências."
+            );
+
+        }
+
+
+        transferencias =
+            resultado.transferencias ||
+            [];
+
+
+        /*
+         * Remove da memória
+         * marcações que já não existem.
+         */
+
+        const idsExistentes =
+            new Set(
+                transferencias.map(
+                    item => item.id
+                )
+            );
+
+
+        marcadas =
+            new Set(
+                [...marcadas].filter(
+                    id =>
+                        idsExistentes.has(id)
+                )
+            );
+
+
+        montarTransferencias();
+
+
+    } catch (erro) {
+
+        console.error(
+            erro
+        );
+
+
+        conteudo.innerHTML =
+            `<div class="vazio">
+                Erro ao carregar transferências.<br><br>
+                ${erro.message}
+            </div>`;
+
+    }
+
+}
+
+
+/* =====================================================
+   MONTAR TELA
+===================================================== */
+
+function montarTransferencias() {
+
+    const conteudo =
+        document.getElementById(
+            "conteudo"
+        );
+
+
+    conteudo.innerHTML = "";
+
+
+    if (
+        transferencias.length === 0
+    ) {
+
+        conteudo.innerHTML =
+            `<div class="vazio">
+                Não existem transferências pendentes.
+            </div>`;
+
+        return;
+
+    }
+
+
+    /*
+     * AGRUPA POR DESTINO
+     */
+
+    const grupos = {};
+
+
+    transferencias.forEach(
+        transferencia => {
+
+            const destino =
+                transferencia.destino;
+
+
+            if (!grupos[destino]) {
+
+                grupos[destino] = [];
+
+            }
+
+
+            grupos[destino].push(
+                transferencia
+            );
+
+        }
+    );
+
+
+    /*
+     * CRIA UM BLOCO
+     * PARA CADA LOJA
+     */
+
+    Object.keys(grupos)
+        .sort()
+        .forEach(
+            destino => {
+
+                const box =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                box.className =
+                    "loja-box";
+
+
+                const cabecalho =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                cabecalho.className =
+                    "loja-cabecalho";
+
+
+                cabecalho.innerHTML = `
+                    <h2>
+                        ${destino}
+                    </h2>
+
+                    <button
+                        class="btn-zerar"
+                        onclick="zerarLoja('${escaparJS(destino)}')">
+
+                        ZERAR
+
+                    </button>
+                `;
+
+
+                box.appendChild(
+                    cabecalho
+                );
+
+
+                const lista =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                lista.className =
+                    "lista";
+
+
+                grupos[destino].forEach(
+                    transferencia => {
+
+                        const item =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        item.className =
+                            "transferencia";
+
+
+                        if (
+                            marcadas.has(
+                                transferencia.id
+                            )
+                        ) {
+
+                            item.classList.add(
+                                "marcada"
+                            );
+
+                        }
+
+
+                        item.id =
+                            "transferencia-" +
+                            transferencia.id;
+
+
+                        item.innerHTML = `
+
+                            <div class="info-campo">
+
+                                <small>PRODUTO</small>
+
+                                <strong>
+                                    ${escapeHTML(
+                                        transferencia.produto
+                                    )}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-campo">
+
+                                <small>QUANTIDADE</small>
+
+                                <strong class="quantidade">
+                                    ${transferencia.quantidade}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-campo">
+
+                                <small>ORIGEM</small>
+
+                                <strong>
+                                    ${escapeHTML(
+                                        transferencia.origem
+                                    )}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-campo">
+
+                                <small>DESTINO</small>
+
+                                <strong>
+                                    ${escapeHTML(
+                                        transferencia.destino
+                                    )}
+                                </strong>
+
+                            </div>
+
+
+                            <button
+                                class="check"
+                                onclick="marcarTransferencia(
+                                    '${escaparJS(transferencia.id)}'
+                                )">
+
+                                ${marcadas.has(
+                                    transferencia.id
+                                ) ? "✓" : ""}
+
+                            </button>
+
+                        `;
+
+
+                        lista.appendChild(
+                            item
+                        );
+
+                    }
+                );
+
+
+                box.appendChild(
+                    lista
+                );
+
+
+                conteudo.appendChild(
+                    box
+                );
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   MARCAR / DESMARCAR
+===================================================== */
+
+function marcarTransferencia(id) {
+
+    if (
+        marcadas.has(id)
+    ) {
+
+        marcadas.delete(id);
+
+    } else {
+
+        marcadas.add(id);
+
+    }
+
+
+    montarTransferencias();
+
+}
+
+
+/* =====================================================
+   ZERAR LOJA
+===================================================== */
+
+async function zerarLoja(
+    destino
+) {
+
+    const itens =
+        transferencias.filter(
+            item =>
+                item.destino === destino &&
+                marcadas.has(item.id)
+        );
+
+
+    if (
+        itens.length === 0
+    ) {
+
+        alert(
+            "Nenhuma transferência marcada para zerar."
+        );
+
+        return;
+
+    }
+
+
+    const confirmar =
+        confirm(
+            "Dar baixa em " +
+            itens.length +
+            " transferência(s) de " +
+            destino +
+            "?"
+        );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+
+    try {
+
+        /*
+         * Desabilita visualmente
+         */
+
+        const botao =
+            event.target;
+
+
+        if (botao) {
+
+            botao.disabled =
+                true;
+
+            botao.innerText =
+                "ZERANDO...";
+
+        }
+
+
+        /*
+         * Envia cada baixa
+         */
+
+        for (
+            const item of itens
+        ) {
+
+            await darBaixa(
+                item.id
+            );
+
+        }
+
+
+        alert(
+            "Transferências baixadas com sucesso!"
+        );
+
+
+        marcadas.clear();
+
+
+        await carregarTransferencias();
+
+
+    } catch (erro) {
+
+        console.error(
+            erro
+        );
+
+
+        alert(
+            "Erro ao dar baixa:\n\n" +
+            erro.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   DAR BAIXA
+===================================================== */
+
+async function darBaixa(
+    id
+) {
+
+    const parametros =
+        new URLSearchParams();
+
+
+    parametros.append(
+        "acao",
+        "baixa"
+    );
+
+
+    parametros.append(
+        "id",
+        id
+    );
+
+
+    const resposta =
+        await fetch(
+            URL_API,
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded;charset=UTF-8"
+
+                },
+
+                body:
+                    parametros.toString()
+
+            }
+        );
+
+
+    const texto =
+        await resposta.text();
+
+
+    let resultado;
+
+
+    try {
+
+        resultado =
+            JSON.parse(
+                texto
+            );
+
+    } catch (erro) {
+
+        throw new Error(
+            "Resposta inválida do Apps Script: " +
+            texto
+        );
+
+    }
+
+
+    if (
+        !resultado.ok
+    ) {
+
+        throw new Error(
+            resultado.erro ||
+            "Erro ao dar baixa."
+        );
+
+    }
+
+
+    return resultado;
+
+}
+
+
+/* =====================================================
+   ESCAPAR HTML
+===================================================== */
+
+function escapeHTML(
+    texto
+) {
+
+    return String(texto)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   ESCAPAR JAVASCRIPT
+===================================================== */
+
+function escaparJS(
+    texto
+) {
+
+    return String(texto)
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+        .replace(
+            /'/g,
+            "\\'"
+        )
+        .replace(
+            /"/g,
+            '\\"'
+        );
+
+}
+
+
+/* =====================================================
+   INICIAR
+===================================================== */
+
+carregarTransferencias();
+
+</script>
+
+</body>
+
+</html>

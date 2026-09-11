@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>RQG - Controladoria</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6fa;
+    color: #222;
+}
+
+/* =====================================================
+   CABEÇALHO PRINCIPAL
+===================================================== */
+
+.topo {
+    background: #3B62D1;
+    color: white;
+    padding: 18px 30px;
+
+    text-align: center;
+
+    position: sticky;
+    top: 0;
+
+    z-index: 1000;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+
+.topo h1 {
+    margin: 0;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.topo p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+
+.container {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* =====================================================
+   BARRA DE INFORMAÇÕES
+===================================================== */
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: white;
+
+    padding: 14px 18px;
+
+    border-radius: 10px;
+
+    margin-bottom: 15px;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.data {
+    font-weight: bold;
+    color: #3B62D1;
+}
+
+.botoes-topo {
+    display: flex;
+    gap: 10px;
+}
+
+/* =====================================================
+   BOTÕES
+===================================================== */
+
+button {
+    border: none;
+    border-radius: 7px;
+
+    padding: 10px 15px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    opacity: 0.92;
+}
+
+.atualizar {
+    background: #3B62D1;
+    color: white;
+}
+
+.transferencias {
+    background: #222;
+    color: white;
+}
+
+/* =====================================================
+   TABELA
+===================================================== */
+
+.tabela-box {
+    width: 100%;
+
+    background: white;
+
+    border-radius: 10px;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+    overflow: auto;
+
+    /* Permite rolagem horizontal */
+    max-height: calc(100vh - 150px);
+}
+
+/* =====================================================
+   CABEÇALHO DA TABELA FIXO
+===================================================== */
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    min-width: 900px;
+}
+
+thead {
+    background: #3B62D1;
+    color: white;
+
+    position: sticky;
+
+    /*
+       Altura aproximada do cabeçalho azul.
+       Como o topo fica fixo, o cabeçalho da tabela
+       fica logo abaixo dele.
+    */
+    top: 73px;
+
+    z-index: 900;
+}
+
+thead th {
+    background: #3B62D1;
+    color: white;
+
+    padding: 13px 10px;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    white-space: nowrap;
+
+    border-right: 1px solid rgba(255,255,255,0.15);
+}
+
+thead th:first-child {
+    text-align: left;
+}
+
+/* =====================================================
+   CORPO DA TABELA
+===================================================== */
+
+tbody td {
+    padding: 10px;
+
+    border-bottom: 1px solid #e5e5e5;
+    border-right: 1px solid #eeeeee;
+
+    text-align: center;
+
+    font-size: 14px;
+}
+
+tbody td:first-child {
+    text-align: left;
+
+    font-weight: 600;
+
+    background: #fafafa;
+}
+
+tbody tr:hover td {
+    background: #f1f5ff;
+}
+
+/* =====================================================
+   CÉLULAS CLICÁVEIS
+===================================================== */
+
+.celula-transferencia {
+    cursor: pointer;
+
+    font-weight: bold;
+
+    transition: 0.2s;
+}
+
+.celula-transferencia:hover {
+    background: #dfe8ff !important;
+}
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.modal {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,0.55);
+
+    z-index: 2000;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.modal-conteudo {
+    background: white;
+
+    width: 100%;
+    max-width: 450px;
+
+    border-radius: 12px;
+
+    padding: 25px;
+
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.modal-conteudo h2 {
+    margin-top: 0;
+
+    color: #3B62D1;
+}
+
+.modal-info {
+    background: #f4f6fa;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    margin-bottom: 15px;
+
+    line-height: 1.6;
+}
+
+.modal-conteudo label {
+    display: block;
+
+    margin-top: 12px;
+
+    margin-bottom: 5px;
+
+    font-weight: bold;
+}
+
+.modal-conteudo select,
+.modal-conteudo input {
+    width: 100%;
+
+    padding: 11px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 7px;
+
+    font-size: 15px;
+}
+
+.modal-botoes {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+.modal-botoes button {
+    flex: 1;
+}
+
+.btn-confirmar {
+    background: #3B62D1;
+    color: white;
+}
+
+.btn-cancelar {
+    background: #ddd;
+    color: #222;
+}
+
+/* =====================================================
+   CARREGANDO
+===================================================== */
+
+.carregando {
+    text-align: center;
+
+    padding: 40px;
+
+    color: #777;
+}
+
+/* =====================================================
+   RESPONSIVO
+===================================================== */
+
+@media (max-width: 700px) {
+
+    .topo {
+        padding: 15px 10px;
+    }
+
+    .topo h1 {
+        font-size: 21px;
+    }
+
+    .topo p {
+        font-size: 12px;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    .info {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 12px;
+    }
+
+    .botoes-topo {
+        width: 100%;
+    }
+
+    .botoes-topo button {
+        flex: 1;
+    }
+
+    .tabela-box {
+        max-height: calc(100vh - 180px);
+    }
+
+    thead {
+        top: 64px;
+    }
+
+    thead th,
+    tbody td {
+        padding: 9px 8px;
+
+        font-size: 12px;
+    }
+
+}
+
+/* =====================================================
+   CELULA SEM ESTOQUE
+===================================================== */
+
+.zero {
+    color: #999;
+}
+
+/* =====================================================
+   CELULA COM ESTOQUE
+===================================================== */
+
+.positivo {
+    color: #222;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     CABEÇALHO
+===================================================== -->
+
+<div class="topo" id="topo">
+
+    <h1>RQG - Controladoria</h1>
+
+    <p>controle de transferências</p>
+
+</div>
+
+
+<div class="container">
+
+    <!-- =================================================
+         INFORMAÇÕES
+    ================================================== -->
+
+    <div class="info">
+
+        <div>
+
+            Data da contagem:
+
+            <span
+                class="data"
+                id="dataPlanilha">
+                carregando...
+            </span>
+
+        </div>
+
+
+        <div class="botoes-topo">
+
+            <button
+                class="atualizar"
+                onclick="carregarPlanilha()">
+
+                ↻ Atualizar
+
+            </button>
+
+
+            <button
+                class="transferencias"
+                onclick="abrirTransferencias()">
+
+                ⇄ Ver transferências
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         TABELA
+    ================================================== -->
+
+    <div class="tabela-box">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Produtos</th>
+
+                    <th>Pier Leste</th>
+
+                    <th>Padaria</th>
+
+                    <th>Forneria Oeste</th>
+
+                    <th>Café Leste</th>
+
+                    <th>Forneria Leste</th>
+
+                    <th>Terminal 3</th>
+
+                    <th>Estoque</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="tabela">
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="carregando">
+
+                        Carregando...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MODAL DE TRANSFERÊNCIA
+===================================================== -->
+
+<div
+    class="modal"
+    id="modal">
+
+    <div class="modal-conteudo">
+
+        <h2>Transferência</h2>
+
+
+        <div
+            class="modal-info"
+            id="modalInfo">
+        </div>
+
+
+        <label for="destino">
+
+            Loja destino
+
+        </label>
+
+
+        <select id="destino">
+
+            <option value="">
+
+                Selecione a loja
+
+            </option>
+
+        </select>
+
+
+        <label for="quantidade">
+
+            Quantidade
+
+        </label>
+
+
+        <input
+            type="number"
+            id="quantidade"
+            min="1"
+            step="1"
+            placeholder="Digite a quantidade">
+
+
+        <div class="modal-botoes">
+
+            <button
+                class="btn-cancelar"
+                onclick="fecharModal()">
+
+                Cancelar
+
+            </button>
+
+
+            <button
+                class="btn-confirmar"
+                onclick="confirmarTransferencia()">
+
+                Transferir
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   CONFIGURAÇÕES
+===================================================== */
+
+const URL_API =
+"https://script.google.com/macros/s/AKfycbzK8uLz70TXboVLPVQlNSeNZFnZ2xNrTrr6BIKcEswPe-QoUxv8VGv1ElXJaX_E3cM/exec";
+
+
+const FORM_URL =
+"https://docs.google.com/forms/d/e/1FAIpQLSd27r7FDuRzXDjxxtJNL67bgPL8eqYtGP6g94yAnuQF6t8a8w/formResponse";
+
+
+const FORM_ENTRIES = {
+
+    loja: "entry.1248793481",
+
+    responsavel: "entry.918181913",
+
+    produto: "entry.1028941405",
+
+    quantidade: "entry.667992309"
+
+};
+
+
+const RESPONSAVEL_PADRAO = "vanny";
+
+
+const lojas = [
+
+    "Pier Leste",
+
+    "Padaria",
+
+    "Forneria Oeste",
+
+    "Cafe Leste",
+
+    "Forneria Leste",
+
+    "Terminal 3",
+
+    "Estoque"
+
+];
+
+
+/* =====================================================
+   VARIÁVEIS
+===================================================== */
+
+let dadosPlanilha = [];
+
+let historico = [];
+
+let transferenciaAtual = null;
+
+
+/* =====================================================
+   ABRIR TRANSFERÊNCIAS
+===================================================== */
+
+function abrirTransferencias() {
+
+    window.location.href = "transferencias.html";
+
+}
+
+
+/* =====================================================
+   CARREGAR PLANILHA
+===================================================== */
+
+async function carregarPlanilha() {
+
+    const tabela = document.getElementById("tabela");
+
+    tabela.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="8"
+                class="carregando">
+
+                Carregando...
+
+            </td>
+
+        </tr>
+
+    `;
+
+
+    try {
+
+        const resposta = await fetch(
+            URL_API + "?t=" + Date.now()
+        );
+
+
+        const dados = await resposta.json();
+
+
+        if (!dados.ok) {
+
+            throw new Error(
+                dados.erro || "Erro ao carregar."
+            );
+
+        }
+
+
+        dadosPlanilha = dados.dados || [];
+
+        historico = dados.historico || [];
+
+
+        montarTabela();
+
+
+        carregarHistorico();
+
+
+    } catch (erro) {
+
+        console.error(erro);
+
+
+        tabela.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    class="carregando">
+
+                    Erro ao carregar os dados.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+/* =====================================================
+   MONTAR TABELA
+===================================================== */
+
+function montarTabela() {
+
+    const tabela =
+        document.getElementById("tabela");
+
+
+    tabela.innerHTML = "";
+
+
+    if (!dadosPlanilha.length) {
+
+        tabela.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    class="carregando">
+
+                    Nenhum dado encontrado.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    /*
+       A data fica na coluna E da primeira linha.
+    */
+
+    if (dadosPlanilha[1]) {
+
+        document.getElementById(
+            "dataPlanilha"
+        ).textContent =
+            dadosPlanilha[1][4] || "";
+
+    }
+
+
+    /*
+       Começa na linha 5 da planilha.
+    */
+
+    for (
+        let linhaIndex = 4;
+        linhaIndex < dadosPlanilha.length;
+        linhaIndex++
+    ) {
+
+        const linha =
+            dadosPlanilha[linhaIndex];
+
+
+        if (!linha || !linha[0]) {
+
+            continue;
+
+        }
+
+
+        const tr =
+            document.createElement("tr");
+
+
+        /*
+           PRODUTO
+        */
+
+        const tdProduto =
+            document.createElement("td");
+
+        tdProduto.textContent =
+            linha[0];
+
+        tr.appendChild(tdProduto);
+
+
+        /*
+           LOJAS
+
+           B = Pier Leste
+           C = Padaria
+           D = Forneria Oeste
+           E = Café Leste
+           F = Forneria Leste
+           G = Terminal 3
+           H = Estoque
+        */
+
+        for (
+            let coluna = 1;
+            coluna <= 7;
+            coluna++
+        ) {
+
+            const td =
+                document.createElement("td");
+
+
+            const valor =
+                linha[coluna] || "0";
+
+
+            td.textContent = valor;
+
+
+            if (
+                Number(
+                    String(valor)
+                        .replace(",", ".")
+                ) > 0
+            ) {
+
+                td.classList.add(
+                    "positivo"
+                );
+
+            } else {
+
+                td.classList.add(
+                    "zero"
+                );
+
+            }
+
+
+            td.classList.add(
+                "celula-transferencia"
+            );
+
+
+            td.onclick = function() {
+
+                abrirModal(
+
+                    linha[0],
+
+                    lojas[coluna - 1],
+
+                    valor,
+
+                    linha,
+
+                    coluna
+
+                );
+
+            };
+
+
+            tr.appendChild(td);
+
+        }
+
+
+        tabela.appendChild(tr);
+
+    }
+
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+function abrirModal(
+    produto,
+    origem,
+    quantidade,
+    linha,
+    coluna
+) {
+
+    transferenciaAtual = {
+
+        produto,
+        origem,
+        quantidade,
+        linha,
+        coluna
+
+    };
+
+
+    document.getElementById(
+        "modalInfo"
+    ).innerHTML = `
+
+        <strong>Produto:</strong>
+        ${produto}
+        <br>
+
+        <strong>Origem:</strong>
+        ${origem}
+        <br>
+
+        <strong>Disponível:</strong>
+        ${quantidade}
+
+    `;
+
+
+    const select =
+        document.getElementById("destino");
+
+
+    select.innerHTML = `
+
+        <option value="">
+
+            Selecione a loja
+
+        </option>
+
+    `;
+
+
+    lojas.forEach(function(loja) {
+
+        if (loja === origem) {
+
+            return;
+
+        }
+
+
+        const option =
+            document.createElement("option");
+
+
+        option.value = loja;
+
+        option.textContent = loja;
+
+
+        select.appendChild(option);
+
+    });
+
+
+    document.getElementById(
+        "quantidade"
+    ).value = "";
+
+
+    document.getElementById(
+        "modal"
+    ).style.display = "flex";
+
+}
+
+
+/* =====================================================
+   FECHAR MODAL
+===================================================== */
+
+function fecharModal() {
+
+    document.getElementById(
+        "modal"
+    ).style.display = "none";
+
+
+    transferenciaAtual = null;
+
+}
+
+
+/* =====================================================
+   ENVIAR GOOGLE FORMS
+===================================================== */
+
+async function enviarParaForms(
+    loja,
+    produto,
+    quantidade
+) {
+
+    const parametros =
+        new URLSearchParams();
+
+
+    parametros.append(
+        FORM_ENTRIES.loja,
+        loja
+    );
+
+
+    parametros.append(
+        FORM_ENTRIES.responsavel,
+        RESPONSAVEL_PADRAO
+    );
+
+
+    parametros.append(
+        FORM_ENTRIES.produto,
+        produto
+    );
+
+
+    parametros.append(
+        FORM_ENTRIES.quantidade,
+        quantidade
+    );
+
+
+    try {
+
+        await fetch(
+            FORM_URL,
+            {
+
+                method: "POST",
+
+                mode: "no-cors",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+
+                },
+
+                body:
+                    parametros.toString()
+
+            }
+        );
+
+
+        return true;
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao enviar para Google Forms:",
+            erro
+        );
+
+
+        return false;
+
+    }
+
+}
+
+
+/* =====================================================
+   REGISTRAR HISTÓRICO
+===================================================== */
+
+async function registrarHistorico(
+    dados
+) {
+
+    const parametros =
+        new URLSearchParams();
+
+
+    parametros.append(
+        "produto",
+        dados.produto
+    );
+
+
+    parametros.append(
+        "quantidade",
+        dados.quantidade
+    );
+
+
+    parametros.append(
+        "origem",
+        dados.origem
+    );
+
+
+    parametros.append(
+        "destino",
+        dados.destino
+    );
+
+
+    parametros.append(
+        "responsavel",
+        dados.responsavel
+    );
+
+
+    try {
+
+        const resposta =
+            await fetch(
+
+                URL_API,
+
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/x-www-form-urlencoded;charset=UTF-8"
+
+                    },
+
+                    body:
+                        parametros.toString()
+
+                }
+
+            );
+
+
+        const texto =
+            await resposta.text();
+
+
+        return JSON.parse(texto);
+
+
+    } catch (erro) {
+
+        console.error(erro);
+
+
+        return {
+
+            ok: false,
+
+            erro: erro.message
+
+        };
+
+    }
+
+}
+
+
+/* =====================================================
+   CONFIRMAR TRANSFERÊNCIA
+===================================================== */
+
+async function confirmarTransferencia() {
+
+    if (!transferenciaAtual) {
+
+        return;
+
+    }
+
+
+    const destino =
+        document.getElementById(
+            "destino"
+        ).value;
+
+
+    const quantidadeInput =
+        document.getElementById(
+            "quantidade"
+        ).value;
+
+
+    const quantidade =
+        Number(quantidadeInput);
+
+
+    if (!destino) {
+
+        alert(
+            "Selecione a loja destino."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !Number.isInteger(quantidade) ||
+        quantidade <= 0
+    ) {
+
+        alert(
+            "Informe uma quantidade válida."
+        );
+
+        return;
+
+    }
+
+
+    const estoque =
+        Number(
+            String(
+                transferenciaAtual.quantidade
+            ).replace(",", ".")
+        );
+
+
+    if (quantidade > estoque) {
+
+        alert(
+            "Quantidade maior que o estoque disponível."
+        );
+
+        return;
+
+    }
+
+
+    const botao =
+        document.querySelector(
+            ".btn-confirmar"
+        );
+
+
+    botao.disabled = true;
+
+    botao.textContent =
+        "Transferindo...";
+
+
+    try {
+
+        /*
+           1. REGISTRA NO HISTÓRICO
+        */
+
+        const resultado =
+            await registrarHistorico({
+
+                produto:
+                    transferenciaAtual.produto,
+
+                quantidade:
+                    quantidade,
+
+                origem:
+                    transferenciaAtual.origem,
+
+                destino:
+                    destino,
+
+                responsavel:
+                    RESPONSAVEL_PADRAO
+
+            });
+
+
+        if (!resultado.ok) {
+
+            throw new Error(
+                resultado.erro ||
+                "Não foi possível registrar a transferência."
+            );
+
+        }
+
+
+        /*
+           2. ENVIA SAÍDA PARA O FORMS
+        */
+
+        const formsOrigem =
+            await enviarParaForms(
+
+                transferenciaAtual.origem,
+
+                transferenciaAtual.produto,
+
+                -quantidade
+
+            );
+
+
+        /*
+           3. ENVIA ENTRADA PARA O FORMS
+        */
+
+        const formsDestino =
+            await enviarParaForms(
+
+                destino,
+
+                transferenciaAtual.produto,
+
+                quantidade
+
+            );
+
+
+        /*
+           4. ATUALIZA A TABELA LOCALMENTE
+        */
+
+        const linha =
+            transferenciaAtual.linha;
+
+
+        const coluna =
+            transferenciaAtual.coluna;
+
+
+        linha[coluna] =
+            estoque - quantidade;
+
+
+        /*
+           Procura a coluna da loja destino.
+        */
+
+        const colunaDestino =
+            lojas.indexOf(destino) + 1;
+
+
+        if (
+            colunaDestino > 0
+        ) {
+
+            const valorDestino =
+                Number(
+                    String(
+                        linha[colunaDestino] || 0
+                    ).replace(",", ".")
+                );
+
+
+            linha[colunaDestino] =
+                valorDestino + quantidade;
+
+        }
+
+
+        montarTabela();
+
+
+        fecharModal();
+
+
+        if (
+            formsOrigem &&
+            formsDestino
+        ) {
+
+            alert(
+                "Transferência realizada com sucesso!"
+            );
+
+        } else {
+
+            alert(
+                "Transferência registrada no histórico, mas houve um problema no envio ao Google Forms."
+            );
+
+        }
+
+
+        carregarHistorico();
+
+
+    } catch (erro) {
+
+        console.error(erro);
+
+
+        alert(
+            erro.message ||
+            "Erro ao realizar transferência."
+        );
+
+
+    } finally {
+
+        botao.disabled = false;
+
+        botao.textContent =
+            "Transferir";
+
+    }
+
+}
+
+
+/* =====================================================
+   HISTÓRICO
+===================================================== */
+
+async function carregarHistorico() {
+
+    try {
+
+        const resposta =
+            await fetch(
+                URL_API + "?historico=1&t=" + Date.now()
+            );
+
+
+        const dados =
+            await resposta.json();
+
+
+        if (dados.ok) {
+
+            historico =
+                dados.historico || [];
+
+        }
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar histórico:",
+            erro
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   FECHAR MODAL CLICANDO FORA
+===================================================== */
+
+document.getElementById(
+    "modal"
+).addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target === this
+        ) {
+
+            fecharModal();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   INICIALIZAÇÃO
+===================================================== */
+
+carregarPlanilha();
+
+
+</script>
+
+</body>
+
+</html>
