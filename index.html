@@ -166,11 +166,9 @@ thead {
     position: sticky;
 
     /*
-       Altura aproximada do cabeçalho azul.
-       Como o topo fica fixo, o cabeçalho da tabela
-       fica logo abaixo dele.
+       Usa a altura real do cabeçalho principal.
     */
-    top: 73px;
+    top: var(--altura-topo, 73px);
 
     z-index: 900;
 }
@@ -389,7 +387,7 @@ tbody tr:hover td {
     }
 
     thead {
-        top: 64px;
+        top: var(--altura-topo, 64px);
     }
 
     thead th,
@@ -676,6 +674,26 @@ let transferenciaAtual = null;
 
 
 /* =====================================================
+   AJUSTAR ALTURA DO CABEÇALHO
+===================================================== */
+
+function ajustarCabecalhoTabela() {
+
+    const topo =
+        document.getElementById("topo");
+
+    const alturaTopo =
+        topo.offsetHeight;
+
+    document.documentElement.style.setProperty(
+        "--altura-topo",
+        alturaTopo + "px"
+    );
+
+}
+
+
+/* =====================================================
    ABRIR TRANSFERÊNCIAS
 ===================================================== */
 
@@ -692,7 +710,8 @@ function abrirTransferencias() {
 
 async function carregarPlanilha() {
 
-    const tabela = document.getElementById("tabela");
+    const tabela =
+        document.getElementById("tabela");
 
     tabela.innerHTML = `
 
@@ -730,9 +749,11 @@ async function carregarPlanilha() {
         }
 
 
-        dadosPlanilha = dados.dados || [];
+        dadosPlanilha =
+            dados.dados || [];
 
-        historico = dados.historico || [];
+        historico =
+            dados.historico || [];
 
 
         montarTabela();
@@ -849,8 +870,10 @@ function montarTabela() {
         const tdProduto =
             document.createElement("td");
 
+
         tdProduto.textContent =
             linha[0];
+
 
         tr.appendChild(tdProduto);
 
@@ -881,7 +904,8 @@ function montarTabela() {
                 linha[coluna] || "0";
 
 
-            td.textContent = valor;
+            td.textContent =
+                valor;
 
 
             if (
@@ -1009,9 +1033,11 @@ function abrirModal(
             document.createElement("option");
 
 
-        option.value = loja;
+        option.value =
+            loja;
 
-        option.textContent = loja;
+        option.textContent =
+            loja;
 
 
         select.appendChild(option);
@@ -1526,11 +1552,22 @@ document.getElementById(
 
 
 /* =====================================================
+   AJUSTAR CABEÇALHO AO REDIMENSIONAR
+===================================================== */
+
+window.addEventListener(
+    "resize",
+    ajustarCabecalhoTabela
+);
+
+
+/* =====================================================
    INICIALIZAÇÃO
 ===================================================== */
 
-carregarPlanilha();
+ajustarCabecalhoTabela();
 
+carregarPlanilha();
 
 </script>
 
