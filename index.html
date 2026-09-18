@@ -31,14 +31,10 @@ body {
     background: #3B62D1;
     color: white;
     padding: 18px 30px;
-
     text-align: center;
-
     position: sticky;
     top: 0;
-
     z-index: 1000;
-
     box-shadow: 0 2px 8px rgba(0,0,0,0.18);
 }
 
@@ -73,15 +69,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     background: white;
-
     padding: 14px 18px;
-
     border-radius: 10px;
-
     margin-bottom: 15px;
-
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
@@ -102,20 +93,22 @@ body {
 button {
     border: none;
     border-radius: 7px;
-
     padding: 10px 15px;
-
     cursor: pointer;
-
     font-size: 14px;
     font-weight: bold;
-
     transition: 0.2s;
 }
 
 button:hover {
     transform: translateY(-1px);
     opacity: 0.92;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none;
 }
 
 .atualizar {
@@ -134,58 +127,39 @@ button:hover {
 
 .tabela-box {
     width: 100%;
-
     background: white;
-
     border-radius: 10px;
-
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-
     overflow: auto;
-
-    /* Permite rolagem horizontal */
     max-height: calc(100vh - 150px);
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 1100px;
 }
 
 /* =====================================================
    CABEÇALHO DA TABELA FIXO
 ===================================================== */
 
-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-
-    min-width: 900px;
-}
-
 thead {
     background: #3B62D1;
     color: white;
-
     position: sticky;
-
-    /*
-       O cabeçalho fica no topo da área
-       de rolagem da tabela.
-    */
     top: 0;
-
     z-index: 900;
 }
 
 thead th {
     background: #3B62D1;
     color: white;
-
     padding: 13px 10px;
-
     text-align: center;
-
     font-size: 14px;
-
     white-space: nowrap;
-
     border-right: 1px solid rgba(255,255,255,0.15);
 }
 
@@ -199,20 +173,15 @@ thead th:first-child {
 
 tbody td {
     padding: 10px;
-
     border-bottom: 1px solid #e5e5e5;
     border-right: 1px solid #eeeeee;
-
     text-align: center;
-
     font-size: 14px;
 }
 
 tbody td:first-child {
     text-align: left;
-
     font-weight: 600;
-
     background: #fafafa;
 }
 
@@ -226,9 +195,7 @@ tbody tr:hover td {
 
 .celula-transferencia {
     cursor: pointer;
-
     font-weight: bold;
-
     transition: 0.2s;
 }
 
@@ -242,80 +209,56 @@ tbody tr:hover td {
 
 .modal {
     display: none;
-
     position: fixed;
-
     inset: 0;
-
     background: rgba(0,0,0,0.55);
-
     z-index: 2000;
-
     align-items: center;
     justify-content: center;
-
     padding: 20px;
 }
 
 .modal-conteudo {
     background: white;
-
     width: 100%;
     max-width: 450px;
-
     border-radius: 12px;
-
     padding: 25px;
-
     box-shadow: 0 10px 40px rgba(0,0,0,0.3);
 }
 
 .modal-conteudo h2 {
     margin-top: 0;
-
     color: #3B62D1;
 }
 
 .modal-info {
     background: #f4f6fa;
-
     padding: 12px;
-
     border-radius: 8px;
-
     margin-bottom: 15px;
-
     line-height: 1.6;
 }
 
 .modal-conteudo label {
     display: block;
-
     margin-top: 12px;
-
     margin-bottom: 5px;
-
     font-weight: bold;
 }
 
 .modal-conteudo select,
 .modal-conteudo input {
     width: 100%;
-
     padding: 11px;
-
     border: 1px solid #ccc;
-
     border-radius: 7px;
-
     font-size: 15px;
 }
 
 .modal-botoes {
     display: flex;
-
     gap: 10px;
-
     margin-top: 20px;
 }
 
@@ -339,10 +282,24 @@ tbody tr:hover td {
 
 .carregando {
     text-align: center;
-
     padding: 40px;
-
     color: #777;
+}
+
+/* =====================================================
+   CELULA SEM ESTOQUE
+===================================================== */
+
+.zero {
+    color: #999;
+}
+
+/* =====================================================
+   CELULA COM ESTOQUE
+===================================================== */
+
+.positivo {
+    color: #222;
 }
 
 /* =====================================================
@@ -369,9 +326,7 @@ tbody tr:hover td {
 
     .info {
         flex-direction: column;
-
         align-items: stretch;
-
         gap: 12px;
     }
 
@@ -394,26 +349,9 @@ tbody tr:hover td {
     thead th,
     tbody td {
         padding: 9px 8px;
-
         font-size: 12px;
     }
 
-}
-
-/* =====================================================
-   CELULA SEM ESTOQUE
-===================================================== */
-
-.zero {
-    color: #999;
-}
-
-/* =====================================================
-   CELULA COM ESTOQUE
-===================================================== */
-
-.positivo {
-    color: #222;
 }
 
 </style>
@@ -508,9 +446,9 @@ tbody tr:hover td {
 
                     <th>Estoque</th>
 
-                     <th>Ibirapuera LOJA</th>
+                    <th>Ibirapuera LOJA</th>
 
-                     <th>Ibirapuera QUIOSQUE</th>
+                    <th>Ibirapuera QUIOSQUE</th>
 
                 </tr>
 
@@ -522,7 +460,7 @@ tbody tr:hover td {
                 <tr>
 
                     <td
-                        colspan="8"
+                        colspan="10"
                         class="carregando">
 
                         Carregando...
@@ -648,25 +586,22 @@ const FORM_ENTRIES = {
 const RESPONSAVEL_PADRAO = "vanny";
 
 
+/*
+   A ordem destas lojas corresponde
+   EXATAMENTE às colunas B:J da planilha.
+*/
+
 const lojas = [
 
-    "Pier Leste",
-
-    "Padaria",
-
-    "Forneria Oeste",
-
-    "Cafe Leste",
-
-    "Forneria Leste",
-
-    "Terminal 3",
-
-    "Estoque", 
-
-    "Ibirapuera LOJA",
-    
-    "Ibirapuera QUIOSQUE"
+    "Pier Leste",          // B
+    "Padaria",             // C
+    "Forneria Oeste",      // D
+    "Cafe Leste",          // E
+    "Forneria Leste",      // F
+    "Terminal 3",          // G
+    "Estoque",             // H
+    "Ibirapuera LOJA",     // I
+    "Ibirapuera QUIOSQUE"  // J
 
 ];
 
@@ -708,7 +643,7 @@ async function carregarPlanilha() {
         <tr>
 
             <td
-                colspan="8"
+                colspan="10"
                 class="carregando">
 
                 Carregando...
@@ -762,7 +697,7 @@ async function carregarPlanilha() {
             <tr>
 
                 <td
-                    colspan="8"
+                    colspan="10"
                     class="carregando">
 
                     Erro ao carregar os dados.
@@ -798,7 +733,7 @@ function montarTabela() {
             <tr>
 
                 <td
-                    colspan="8"
+                    colspan="10"
                     class="carregando">
 
                     Nenhum dado encontrado.
@@ -853,9 +788,9 @@ function montarTabela() {
             document.createElement("tr");
 
 
-        /*
-           PRODUTO
-        */
+        /* =================================================
+           PRODUTO - COLUNA A
+        ================================================= */
 
         const tdProduto =
             document.createElement("td");
@@ -868,21 +803,25 @@ function montarTabela() {
         tr.appendChild(tdProduto);
 
 
-        /*
-           LOJAS
+        /* =================================================
+           LOJAS - COLUNAS B:J
+        ================================================= */
 
-           B = Pier Leste
-           C = Padaria
-           D = Forneria Oeste
-           E = Café Leste
-           F = Forneria Leste
-           G = Terminal 3
-           H = Estoque
+        /*
+           coluna = 1 → B → Pier Leste
+           coluna = 2 → C → Padaria
+           coluna = 3 → D → Forneria Oeste
+           coluna = 4 → E → Cafe Leste
+           coluna = 5 → F → Forneria Leste
+           coluna = 6 → G → Terminal 3
+           coluna = 7 → H → Estoque
+           coluna = 8 → I → Ibirapuera LOJA
+           coluna = 9 → J → Ibirapuera QUIOSQUE
         */
 
         for (
             let coluna = 1;
-            coluna <= 7;
+            coluna <= 9;
             coluna++
         ) {
 
@@ -890,20 +829,35 @@ function montarTabela() {
                 document.createElement("td");
 
 
+            /*
+               Se a célula estiver vazia,
+               mostra 0.
+            */
+
             const valor =
-                linha[coluna] || "0";
+                linha[coluna] === undefined ||
+                linha[coluna] === null ||
+                linha[coluna] === ""
+                    ? "0"
+                    : linha[coluna];
 
 
             td.textContent =
                 valor;
 
 
-            if (
+            /*
+               Define visual de zero ou positivo.
+            */
+
+            const numero =
                 Number(
                     String(valor)
                         .replace(",", ".")
-                ) > 0
-            ) {
+                );
+
+
+            if (numero > 0) {
 
                 td.classList.add(
                     "positivo"
@@ -917,6 +871,10 @@ function montarTabela() {
 
             }
 
+
+            /*
+               Todas as 9 lojas são clicáveis.
+            */
 
             td.classList.add(
                 "celula-transferencia"
@@ -1009,6 +967,10 @@ function abrirModal(
 
     `;
 
+
+    /*
+       Cria as opções usando todas as 9 lojas.
+    */
 
     lojas.forEach(function(loja) {
 
@@ -1407,7 +1369,12 @@ async function confirmarTransferencia() {
 
 
         /*
-           Procura a coluna da loja destino.
+           Localiza a coluna destino.
+
+           lojas[0] = B
+           lojas[1] = C
+           ...
+           lojas[8] = J
         */
 
         const colunaDestino =
@@ -1415,7 +1382,8 @@ async function confirmarTransferencia() {
 
 
         if (
-            colunaDestino > 0
+            colunaDestino >= 1 &&
+            colunaDestino <= 9
         ) {
 
             const valorDestino =
@@ -1492,7 +1460,9 @@ async function carregarHistorico() {
 
         const resposta =
             await fetch(
-                URL_API + "?historico=1&t=" + Date.now()
+                URL_API +
+                "?historico=1&t=" +
+                Date.now()
             );
 
 
